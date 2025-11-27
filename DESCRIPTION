@@ -1,0 +1,19 @@
+Package: AnnotationWorkflow
+Title: Generate Bioconductor genomic annotation resources programmatically
+Version: 0.0.1
+Authors@R:
+    person(given = "Vince",
+           family = "Carey",
+           role = c("aut", "cre"),
+           email = "stvjc@channing.harvard.edu",
+           comment = c(ORCID = "0000-0003-4046-0063"))
+Description: Generate Bioconductor genomic annotation resources programmatically.
+Depends: R (>= 4.0.0), tools, utils, targets
+Suggests: knitr, BiocStyle, testthat, rmarkdown
+License: Artistic-2.0
+VignetteBuilder: knitr
+biocViews: Infrastructure
+Encoding: UTF-8
+URL: https://github.com/vjcitn/AnnotationWorkflow
+BugReports: https://github.com/vjcitn/AnnotationWorkflow/issues
+RoxygenNote: 7.3.3
