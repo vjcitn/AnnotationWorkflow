@@ -1,0 +1,42 @@
+
+When AnnotationForge is used to create org.Hs.eg.db
+
+via
+
+library(AnnotationForge)
+options(timeout=3600)
+makeOrgPackageFromNCBI(version = "0.1",
+                       author = "Some One <so@someplace.org>",
+                       maintainer = "Some One <so@someplace.org>",
+                       outputDir = ".",
+rebuildCache=FALSE,
+                       tax_id = "9606",
+                       genus = "Homo",
+                       species = "sapiens")
+
+the tables are
+
+sqlite> .tables
+accessions    entrez_genes  go_all        go_cc_all     map_metadata
+alias         gene_info     go_bp         go_mf         metadata    
+chromosomes   genes         go_bp_all     go_mf_all     pubmed      
+ensembl       go            go_cc         map_counts    refseq      
+sqlite> 
+
+
+When the pipeline is used, the tables are
+
+sqlite> .tables
+accessions             genes                  map_metadata         
+alias                  genetype               metadata             
+chrlengths             go                     ncbi2ensembl         
+chromosome_locations   go_all                 omim                 
+chromosomes            go_bp                  pfam                 
+cytogenetic_locations  go_bp_all              prosite              
+ec                     go_cc                  pubmed               
+ensembl                go_cc_all              refseq               
+ensembl2ncbi           go_mf                  ucsc                 
+ensembl_prot           go_mf_all              uniprot              
+ensembl_trans          kegg                 
+gene_info              map_counts       
+
