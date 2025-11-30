@@ -1,0 +1,49 @@
+---
+title: "AnnotationWorkflow: updating annotation packaging in Bioconductor"
+author: "Vincent J. Carey, stvjc at channing.harvard.edu"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{AnnotationWorkflow: updating annotation packaging in Bioconductor}
+  %\VignetteEncoding{UTF-8}
+output:
+  BiocStyle::html_document:
+    highlight: pygments
+    number_sections: yes
+    theme: united
+    toc: yes
+---
+
+# Introduction
+
+This package addresses the production of key annotation packages in
+Bioconductor.
+
+The production pipeline has functioned for many releases.  In this
+package we explore mechanisms of
+
+- simplifying individual package production, which typically involves
+numerous separate scripts and utilities,
+
+- measuring and reducing resource requirements,
+
+- introducing new methods of data representation introduced by
+the genomics and information science communities.
+
+# Legacy pattern
+
+The process for building annotation resources has
+been documented in a 
+[README file](https://github.com/Bioconductor/BioconductorAnnotationPipeline/blob/master/README.md).  
+
+The main stages are
+
+- download
+- parse
+- build
+
+and these stages have different details and code bases for different resources.
+
+Furthermore, there are classes of packages that form a hierarchy.  "db0"
+type packages are necessary for packages like GO.db and org.Hs.eg.db to
+be produced.
