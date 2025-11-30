@@ -1,6 +1,6 @@
 Package: AnnotationWorkflow
 Title: Generate Bioconductor genomic annotation resources programmatically
-Version: 0.0.1
+Version: 0.0.2
 Authors@R:
     person(given = "Vince",
            family = "Carey",
@@ -10,6 +10,7 @@ Authors@R:
 Description: Generate Bioconductor genomic annotation resources programmatically.
 Depends: R (>= 4.0.0), tools, utils, targets
 Suggests: knitr, BiocStyle, testthat, rmarkdown
+Imports: stringi, dplyr, tidyr, GSEABase, RBGL, graph
 License: Artistic-2.0
 VignetteBuilder: knitr
 biocViews: Infrastructure
