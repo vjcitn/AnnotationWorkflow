@@ -35,8 +35,9 @@ term_definition_f <- "term_definition.txt"
 term_synonym_f <- "term_synonym.txt"
 graph_path_f <- "graph_path.txt"
 
-
+message("getOBOcollection...")
 obo <- GSEABase::getOBOCollection(obopath(goresource))
+message("produce names...")
 kv <- obo@.kv
 stanza <- obo@.stanza
 
@@ -51,6 +52,7 @@ names <- c(names, synonym_scope)    ## Add synonym_scope
 names <- c(names, universal)     ## Add universal 
 
 ## Create term table
+message("create term table...")
 terms <- data.frame(id = seq_along(names),
                     name = names)
 
@@ -73,6 +75,7 @@ term['is_root'] <- rep(0, nrow(term))
 
 
 
+message("create relationships...")
 relationships <- c('relationship', 'external')
 term['is_relationship'] <- ifelse(term$term_type %in% relationships, 1, 0)
 term[term$name == 'is_a', 'term_type'] <- 'relationship'
@@ -86,6 +89,7 @@ write.table(term, file = term_f, quote=F, col.names=F, row.names=F, sep = "\t")
 
 ## Create term2term table
 
+message("create term2term table...")
 is_a <- kv[kv$key == 'is_a',]
 colnames(is_a) <- c('term1_id', 'relationship_type_id', 'term2_id')
 
@@ -140,6 +144,7 @@ term2termlst <- lapply(list(bpids, mfids, ccids),
 write.table(term2term, file = term2term_f, quote=F, col.names=F, row.names=F, sep = "\t")
 
 
+message("create synonyms...")
 ## term_synonym.txt
 
 alt_id <- kv[kv$key == 'alt_id',]
@@ -170,6 +175,7 @@ term_synonym <- term_synonym[c(1, 3, 4, 2, 5)]
 write.table(term_synonym, file = term_synonym_f, quote=F, col.names=F, row.names=F, sep = "\t")
 
 
+message("create definitions...")
 ## term_definition.txt
 
 def <-  kv[kv$key == 'def',][-2]
@@ -194,6 +200,7 @@ term_definition[is.na(term_definition)] <- "//N"   # Change any remaining NA's t
 write.table(term_definition, file = term_definition_f, quote=F, col.names=F, row.names=F, sep = "\t")
 
 
+message("create graph...")
 ## graph_path.txt
 
 ## NOTE: This section generalizes the file to only show generate edges in the transitive closure
@@ -249,4 +256,5 @@ gplst[[3]][,1] <- gplst[[3]][,1] + gplst[[2]][nrow(gplst[[2]]),1]
 graph_path <- do.call(rbind, gplst)
 
 write.table(graph_path, file = graph_path_f, quote=F, col.names=F, row.names=F, sep = "\t")
+message("done")
 }
