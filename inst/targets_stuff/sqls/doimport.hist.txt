@@ -1,0 +1,70 @@
+library(RSQLite)
+con = dbConnect(SQLite(), "test.sql")
+z = readLines("term.txt")
+z = readLines("term.sql")
+zz = paste(z, collapse="\n")
+zz
+dbExecQuery
+library(DBI)
+dbExecQuery
+ls(2)
+dbExecute(con, zz)
+dbListTables(con)
+cat(zz)
+mm = "DROP TABLE IF EXISTS term;
+CREATE TABLE term (
+  id int(11) NOT NULL,
+  name varchar(255) NOT NULL default '',
+  term_type varchar(55) NOT NULL default '',
+  acc varchar(255) NOT NULL default '',
+  is_obsolete int(11) NOT NULL default '0',
+  is_root int(11) NOT NULL default '0',
+  is_relation int(11) NOT NULL default '0',
+  PRIMARY KEY  (id)
+) ;
+CREATE INDEX t2 on term(term_type);
+"
+dbExecute(con, mm)
+?dbExecute
+dbGetQuery(con, mm)
+dbSendStatement(con, mm)
+dbListTables(con)
+mm
+cat(mm)
+con <- dbConnect(SQLite(), "mydb.sqlite")
+dbExecute(con, "DROP TABLE IF EXISTS term")
+dbExecute(con, "
+  CREATE TABLE term (
+    id          INTEGER      NOT NULL,
+    name        TEXT         NOT NULL DEFAULT '',
+    term_type   TEXT         NOT NULL DEFAULT '',
+    acc         TEXT         NOT NULL DEFAULT '',
+    is_obsolete INTEGER      NOT NULL DEFAULT 0,
+    is_root     INTEGER      NOT NULL DEFAULT 0,
+    is_relation INTEGER      NOT NULL DEFAULT 0,
+    PRIMARY KEY (id)
+  )
+")
+dbExecute(con, "CREATE INDEX t2 ON term(term_type)")
+dbListTables(con)
+ttab = read.delim("../abc/term.txt", sep="\t", h=FALSE, row.names=FALSE)
+ttab = read.delim("../abc/term.txt", sep="\t", h=FALSE, row.names=NULL)
+head(ttab)
+dbWriteTable(con, "term", ttab)
+dbWriteTable(con, "term", ttab, append=TRUE)
+dbReadTable(con, "term")
+dbReadTable(con, "term") -> ii
+names(ttab) = ii
+dbWriteTable(con, "term", ttab, append=TRUE)
+ii
+head(ttab)
+colnames(ttab) = ii
+head(ttab)
+ii
+names(ii)
+colnames(ttab) = names(ii)
+head(ttab)
+dbWriteTable(con, "term", ttab, append=TRUE)
+dbReadTable(con, "term", nrow=4)
+getwd()
+savehistory(file="doimport.hist.txt")
