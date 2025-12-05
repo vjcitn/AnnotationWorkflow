@@ -12,7 +12,9 @@
 #' package-resident version of parseOBO.R utility from pipeline
 #' @param goresource instance of BiocGO
 #' @param workdir path files will be written here
-#' @note writes graph_path.txt, term2term.txt term_definition.txt, term_synonym.txt and term.txt in workdir
+#' @note Writes graph_path.txt, term2term.txt term_definition.txt, term_synonym.txt and term.txt in workdir.
+#' Dec 2025: Code is modified to add colnames to these txt files.  This will facilitate use of
+#' dbWriteTable after ingesting the file, eliminating the need for scripting sqlite .read commands.
 #' @export
 parseOBO = function(goresource, workdir) {
 
@@ -84,7 +86,28 @@ term[term$name %in% synonym_scope, 'term_type'] <- 'synonym_scope'
 ## universal is a root 
 term[term$name %in% universal, c('term_type','is_root')] <- c('universal',1)
 
-write.table(term, file = term_f, quote=F, col.names=F, row.names=F, sep = "\t")
+# Dec 2 2025: the target of this text output is
+
+#CREATE TABLE term (
+#  id int(11) NOT NULL,
+#  name varchar(255) NOT NULL default '',
+#  term_type varchar(55) NOT NULL default '',
+#  acc varchar(255) NOT NULL default '',
+#  is_obsolete int(11) NOT NULL default '0',
+#  is_root int(11) NOT NULL default '0',
+#  is_relation int(11) NOT NULL default '0',
+#  PRIMARY KEY  (id)
+#) ;
+
+# by assigning names we permit ingestion of text with colnames
+# and can then use dbWriteTable to populate the desired table
+# we might not even need the declarations above, eventually, so FIXME
+# to simplify: have the database initialized and use dbWriteTable
+# right here
+
+colnames(term) = c("id", "name", "term_type", "acc", "is_obsolete", "is_root", "is_relation")
+
+write.table(term, file = term_f, quote=FALSE, col.names=TRUE, row.names=FALSE, sep = "\t")
 
 
 ## Create term2term table
@@ -141,7 +164,22 @@ term2term <- rbind(term2term, univterms)
 term2termlst <- lapply(list(bpids, mfids, ccids),
                        function(x) term2term[term2term$term1_id %in% x,])
 
-write.table(term2term, file = term2term_f, quote=F, col.names=F, row.names=F, sep = "\t")
+# see above for basic rationale in assigning names
+
+#DROP TABLE IF EXISTS term2term;
+#CREATE TABLE term2term (
+#  id int(11) NOT NULL,
+#  relationship_type_id int(11) NOT NULL default '0',
+#  term1_id int(11) NOT NULL default '0',
+#  term2_id int(11) NOT NULL default '0',
+#  complete int(11) NOT NULL default '0',
+#  PRIMARY KEY  (id)
+#); 
+#CREATE INDEX tt3 on term2term(term1_id, term2_id);
+
+colnames(term2term) = c("id", "relationship_type_id", "term1_id", "term2_id", "complete")
+
+write.table(term2term, file = term2term_f, quote=FALSE, col.names=TRUE, row.names=FALSE, sep = "\t")
 
 
 message("create synonyms...")
@@ -171,8 +209,22 @@ term_synonym$term_id <- match(term_synonym$term_id, names)
 term_synonym$synonym_type_id <- match(term_synonym$synonym_type_id, names)
 
 term_synonym <- term_synonym[c(1, 3, 4, 2, 5)]
+
+# see above for rationale of names
+
+#DROP TABLE IF EXISTS term_synonym;
+#CREATE TABLE term_synonym (
+#  term_id int(11) NOT NULL default '0',
+#  term_synonym varchar(255) default NULL,
+#  acc_synonym varchar(255) default NULL,
+#  synonym_type_id int(11) NOT NULL default '0',
+#  synonym_category_id int(11) default NULL
+#);
+#CREATE INDEX ts1 on term_synonym(term_id);
+
+colnames(term_synonym) = c("term_id", "term_synonym", "acc_synonym", "synonym_type_id", "synonym_category_id")
     
-write.table(term_synonym, file = term_synonym_f, quote=F, col.names=F, row.names=F, sep = "\t")
+write.table(term_synonym, file = term_synonym_f, quote=FALSE, col.names=TRUE, row.names=FALSE, sep = "\t")
 
 
 message("create definitions...")
@@ -196,8 +248,19 @@ term_definition <- term_definition[c(1, 2, 4, 3, 5)]
 
 term_definition[is.na(term_definition)] <- "//N"   # Change any remaining NA's to mysql-friendly //N's
 
+#DROP TABLE IF EXISTS term_definition;
+#CREATE TABLE term_definition (
+#  term_id int(11) NOT NULL default '0',
+#  term_definition text NOT NULL,
+#  dbxref_id int(11) default NULL,
+#  term_comment mediumtext,
+#  reference varchar(255) default NULL
+#) ;
+#CREATE INDEX td1 on term_definition(term_id);
 
-write.table(term_definition, file = term_definition_f, quote=F, col.names=F, row.names=F, sep = "\t")
+colnames(term_definition) = c("term_id", "term_definition", "dbxref_id", "term_comment", "reference")
+
+write.table(term_definition, file = term_definition_f, quote=FALSE, col.names=TRUE, row.names=FALSE, sep = "\t")
 
 
 message("create graph...")
@@ -255,6 +318,21 @@ gplst[[3]][,1] <- gplst[[3]][,1] + gplst[[2]][nrow(gplst[[2]]),1]
 
 graph_path <- do.call(rbind, gplst)
 
-write.table(graph_path, file = graph_path_f, quote=F, col.names=F, row.names=F, sep = "\t")
+
+#DROP TABLE IF EXISTS graph_path;
+#CREATE TABLE graph_path (
+#  id int(11) NOT NULL,
+#  term1_id int(11) NOT NULL default '0',
+#  term2_id int(11) NOT NULL default '0',
+#  relationship_type_id int(11) NOT NULL default '0',
+#  distance int(11) NOT NULL default '0',
+#  relation_distance int(11) default NULL,
+#  PRIMARY KEY  (id)
+#);
+#CREATE INDEX g3 on graph_path(term1_id, term2_id);
+
+colnames(graph_path) = c("id", "term1_id", "term2_id", "relationship_type_id", "distance", "relation_distance")
+
+write.table(graph_path, file = graph_path_f, quote=FALSE, col.names=TRUE, row.names=FALSE, sep = "\t")
 message("done")
 }

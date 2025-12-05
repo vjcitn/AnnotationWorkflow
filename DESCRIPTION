@@ -1,6 +1,6 @@
 Package: AnnotationWorkflow
 Title: Generate Bioconductor genomic annotation resources programmatically
-Version: 0.0.3
+Version: 0.0.5
 Authors@R:
     person(given = "Vince",
            family = "Carey",
