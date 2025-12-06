@@ -15,5 +15,7 @@ parseOBO(goresource, workdir)
 package-resident version of parseOBO.R utility from pipeline
 }
 \note{
-writes graph_path.txt, term2term.txt term_definition.txt, term_synonym.txt and term.txt in workdir
+Writes graph_path.txt, term2term.txt term_definition.txt, term_synonym.txt and term.txt in workdir.
+Dec 2025: Code is modified to add colnames to these txt files.  This will facilitate use of
+dbWriteTable after ingesting the file, eliminating the need for scripting sqlite .read commands.
 }
