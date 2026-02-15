@@ -1,7 +1,11 @@
 # AnnotationWorkflow
 
-This repository introduces a
-second generation of code for annotation resource production for Bioconductor.
+~~This repository introduces a
+second generation of code for annotation resource production for Bioconductor.~~
+
+This repository holds some resources found significant for attempting a more systematic
+approach to producing Bioc Annotation resources.  As of Jan 2025, for 3.23, we will
+use the legacy approach at BioconductorAnnotationPipeline with some minor modifications.
 
 # GO.db package
 
